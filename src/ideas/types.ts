@@ -37,6 +37,15 @@ export type IdeaRecord = {
   authorName?: string
   assigneeId?: string | null
   assigneeName?: string | null
+  rating?: number | null
+  ratingComment?: string | null
+  afterPhotoUrl?: string | null
+}
+
+export type IdeaFeedbackPayload = {
+  rating: number
+  comment?: string
+  afterPhotoUrl?: string
 }
 
 export type CreateIdeaPayload = {

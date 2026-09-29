@@ -9,6 +9,7 @@ export type RootStackParamList = {
   AiIdeaChat: undefined
   IdeaSubmitted: { ideaId: string }
   IdeaDetail: { ideaId: string }
+  ImpactFeedback: { ideaId: string }
   GovIdeaDetail: { ideaId: string }
   TrendDigest: undefined
   DistrictRanking: undefined

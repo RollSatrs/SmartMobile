@@ -62,6 +62,11 @@ export function ResidentHomeScreen({ navigation }: Props) {
     [ideas],
   )
 
+  const ideasAwaitingFeedback = useMemo(
+    () => ideas.filter((idea) => idea.status === "done" && !idea.rating),
+    [ideas],
+  )
+
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <ScrollView
@@ -143,6 +148,30 @@ export function ResidentHomeScreen({ navigation }: Props) {
             Описать идею с AI
           </Button>
         </View>
+
+        {ideasAwaitingFeedback.length ? (
+          <View style={styles.feedbackBanner}>
+            <View style={styles.feedbackIcon}>
+              <MaterialCommunityIcons name="star-outline" size={27} color={colors.secondary} />
+            </View>
+            <View style={styles.feedbackCopy}>
+              <Text variant="titleMedium" style={styles.feedbackTitle}>Оцените результат</Text>
+              <Text variant="bodySmall" style={styles.feedbackText}>
+                {ideasAwaitingFeedback.length === 1
+                  ? "Работа по вашей идее завершена. Расскажите, довольны ли вы результатом."
+                  : `Завершены ${ideasAwaitingFeedback.length} ваши идеи — поделитесь впечатлением.`}
+              </Text>
+              <Button
+                mode="contained-tonal"
+                icon="star"
+                onPress={() => navigation.navigate("ImpactFeedback", { ideaId: ideasAwaitingFeedback[0].id })}
+                style={styles.feedbackButton}
+              >
+                Оставить оценку
+              </Button>
+            </View>
+          </View>
+        ) : null}
 
         <View style={styles.statsRow}>
           <StatCard value={stats.total} label="Всего" icon="file-document-outline" />
@@ -283,6 +312,21 @@ const styles = StyleSheet.create({
   aiCreateButton: { alignSelf: "flex-start", marginTop: 10 },
   createButtonContent: { minHeight: 50 },
   statsRow: { flexDirection: "row", gap: 10, marginTop: 14 },
+  feedbackBanner: {
+    flexDirection: "row",
+    gap: 13,
+    padding: 17,
+    marginTop: 14,
+    borderRadius: 22,
+    backgroundColor: "#FFF6E4",
+    borderWidth: 1,
+    borderColor: "#F1D89D",
+  },
+  feedbackIcon: { width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center", backgroundColor: "#FFFFFF" },
+  feedbackCopy: { flex: 1 },
+  feedbackTitle: { color: colors.ink, fontWeight: "800" },
+  feedbackText: { color: colors.inkMuted, lineHeight: 18, marginTop: 3 },
+  feedbackButton: { alignSelf: "flex-start", marginTop: 10 },
   statCard: {
     flex: 1,
     minHeight: 112,
