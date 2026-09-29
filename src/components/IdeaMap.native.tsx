@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import * as Location from "expo-location"
 import { Pressable, StyleSheet, View } from "react-native"
@@ -18,6 +18,14 @@ const SEMEY_REGION = {
 export function IdeaMap({ value, onChange, onError }: IdeaMapProps) {
   const mapRef = useRef<MapView>(null)
   const [isLocating, setIsLocating] = useState(false)
+
+  useEffect(() => {
+    if (!value) return
+    mapRef.current?.animateToRegion(
+      { ...value, latitudeDelta: 0.025, longitudeDelta: 0.025 },
+      450,
+    )
+  }, [value])
 
   const handleMapPress = (event: MapPressEvent) => {
     onChange(event.nativeEvent.coordinate)
@@ -40,10 +48,6 @@ export function IdeaMap({ value, onChange, onError }: IdeaMapProps) {
         longitude: position.coords.longitude,
       }
       onChange(coordinates)
-      mapRef.current?.animateToRegion(
-        { ...coordinates, latitudeDelta: 0.025, longitudeDelta: 0.025 },
-        450,
-      )
     } catch {
       onError("Не удалось определить местоположение. Поставьте точку вручную.")
     } finally {
