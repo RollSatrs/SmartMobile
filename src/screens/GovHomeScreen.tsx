@@ -11,6 +11,7 @@ import { useAuth } from "../auth/AuthContext"
 import { ideaService } from "../ideas/ideaService"
 import { ideaStatusConfig } from "../ideas/status"
 import { IDEA_CATEGORIES, type GovIdeaFilters, type IdeaRecord, type IdeaStatus } from "../ideas/types"
+import { insightsService } from "../insights/insightsService"
 import type { RootStackParamList } from "../navigation/types"
 import { colors } from "../theme"
 
@@ -62,11 +63,19 @@ export function GovHomeScreen({ navigation }: Props) {
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<IdeaStatus | undefined>(undefined)
   const [category, setCategory] = useState<string | undefined>(undefined)
-  const [district, setDistrict] = useState("")
+  const [district, setDistrict] = useState<string | undefined>(undefined)
+  const [districts, setDistricts] = useState<string[]>([])
 
   const requestId = useRef(0)
 
-  const filters: GovIdeaFilters = { search: search.trim() || undefined, status, category, district: district.trim() || undefined }
+  const filters: GovIdeaFilters = { search: search.trim() || undefined, status, category, district }
+
+  useEffect(() => {
+    insightsService
+      .getDistrictRanking()
+      .then((ranking) => setDistricts(ranking.map((entry) => entry.district)))
+      .catch(() => setDistricts([]))
+  }, [])
 
   const load = useCallback(
     async (targetPage: number, mode: "replace" | "append") => {
@@ -151,17 +160,23 @@ export function GovHomeScreen({ navigation }: Props) {
           onChangeText={setSearch}
           left={<TextInput.Icon icon="magnify" />}
           style={styles.searchInput}
+          textContentType="none"
+          autoComplete="off"
           dense
         />
-        <TextInput
-          mode="outlined"
-          placeholder="Район"
-          value={district}
-          onChangeText={setDistrict}
-          left={<TextInput.Icon icon="map-marker-outline" />}
-          style={styles.searchInput}
-          dense
-        />
+        {districts.length ? (
+          <View style={styles.chipRow}>
+            <Chip label="Все районы" active={!district} onPress={() => setDistrict(undefined)} />
+            {districts.map((value) => (
+              <Chip
+                key={value}
+                label={value}
+                active={district === value}
+                onPress={() => setDistrict(district === value ? undefined : value)}
+              />
+            ))}
+          </View>
+        ) : null}
 
         <View style={styles.chipRow}>
           <Chip label="Все статусы" active={!status} onPress={() => setStatus(undefined)} />

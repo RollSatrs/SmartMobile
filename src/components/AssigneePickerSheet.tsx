@@ -71,6 +71,8 @@ export function AssigneePickerSheet({
             left={<TextInput.Icon icon="magnify" />}
             right={query ? <TextInput.Icon icon="close" onPress={() => setQuery("")} /> : undefined}
             style={styles.search}
+            textContentType="none"
+            autoComplete="off"
             disabled={isLoading || isSubmitting}
           />
 

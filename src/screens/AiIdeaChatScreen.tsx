@@ -108,6 +108,8 @@ export function AiIdeaChatScreen({ navigation }: Props) {
                 value={parsedIdea.title}
                 onChangeText={(title) => setParsedIdea((current) => current ? { ...current, title } : current)}
                 maxLength={120}
+                textContentType="none"
+                autoComplete="off"
               />
               <TextInput
                 mode="outlined"
@@ -118,6 +120,8 @@ export function AiIdeaChatScreen({ navigation }: Props) {
                 numberOfLines={5}
                 maxLength={1500}
                 style={styles.descriptionInput}
+                textContentType="none"
+                autoComplete="off"
               />
 
               <View style={styles.categoryRow}>
@@ -161,6 +165,8 @@ export function AiIdeaChatScreen({ navigation }: Props) {
                 error={showValidation && !messageValid}
                 style={styles.messageInput}
                 right={<TextInput.Affix text={`${message.length}/5000`} />}
+                textContentType="none"
+                autoComplete="off"
               />
               {showValidation && !messageValid ? (
                 <HelperText type="error" visible>Добавьте немного деталей — минимум 10 символов</HelperText>

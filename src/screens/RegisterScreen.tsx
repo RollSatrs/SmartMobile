@@ -64,6 +64,7 @@ export function RegisterScreen({ navigation }: Props) {
         value={name}
         onChangeText={setName}
         autoComplete="name"
+        textContentType="name"
         left={<TextInput.Icon icon="account-outline" />}
       />
 
@@ -74,6 +75,7 @@ export function RegisterScreen({ navigation }: Props) {
         onChangeText={setEmail}
         autoCapitalize="none"
         autoComplete="email"
+        textContentType="emailAddress"
         keyboardType="email-address"
         error={emailIsInvalid}
         left={<TextInput.Icon icon="email-outline" />}
@@ -91,6 +93,7 @@ export function RegisterScreen({ navigation }: Props) {
         onChangeText={setPassword}
         secureTextEntry={!showPassword}
         autoComplete="new-password"
+        textContentType="newPassword"
         error={passwordIsInvalid}
         left={<TextInput.Icon icon="lock-outline" />}
         right={

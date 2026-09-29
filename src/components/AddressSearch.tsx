@@ -88,6 +88,8 @@ export function AddressSearch({ onSelect }: Props) {
         value={query}
         onChangeText={handleQueryChange}
         autoCorrect={false}
+        textContentType="none"
+        autoComplete="off"
         left={<TextInput.Icon icon="magnify" />}
         right={
           isLoading
