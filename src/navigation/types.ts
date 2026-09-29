@@ -3,7 +3,10 @@ export type RootStackParamList = {
   SignUp: undefined
   ResidentHome: undefined
   GovHome: undefined
-  CreateIdea: undefined
+  CreateIdea: {
+    draft?: { title: string; description: string; categorySlug: string | null }
+  } | undefined
+  AiIdeaChat: undefined
   IdeaSubmitted: { ideaId: string }
   IdeaDetail: { ideaId: string }
   GovIdeaDetail: { ideaId: string }

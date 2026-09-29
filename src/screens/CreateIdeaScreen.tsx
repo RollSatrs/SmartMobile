@@ -31,10 +31,10 @@ type Props = NativeStackScreenProps<RootStackParamList, "CreateIdea">
 
 type PhotoSource = "camera" | "library"
 
-export function CreateIdeaScreen({ navigation }: Props) {
+export function CreateIdeaScreen({ navigation, route }: Props) {
   const districtRequest = useRef(0)
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
+  const [title, setTitle] = useState(route.params?.draft?.title ?? "")
+  const [description, setDescription] = useState(route.params?.draft?.description ?? "")
   const [photoUri, setPhotoUri] = useState<string | null>(null)
   const [coordinates, setCoordinates] = useState<Coordinates | null>(null)
   const [district, setDistrict] = useState("")
@@ -165,6 +165,19 @@ export function CreateIdeaScreen({ navigation }: Props) {
               </Text>
             </View>
           </View>
+
+          {route.params?.draft ? (
+            <View style={styles.aiDraftCard}>
+              <MaterialCommunityIcons name="creation" size={24} color={colors.secondary} />
+              <View style={styles.aiCopy}>
+                <Text variant="titleSmall" style={styles.aiTitle}>Черновик подготовлен AI</Text>
+                <Text variant="bodySmall" style={styles.aiText}>
+                  Проверьте текст, затем добавьте фотографию и точку на карте.
+                </Text>
+              </View>
+              <Button mode="text" compact onPress={() => navigation.goBack()}>Уточнить</Button>
+            </View>
+          ) : null}
 
           <Section number="1" title="Опишите идею" subtitle="Название и суть предложения">
             <TextInput
@@ -392,6 +405,14 @@ const styles = StyleSheet.create({
   introCopy: { flex: 1 },
   introTitle: { color: colors.ink, fontWeight: "800" },
   introText: { color: colors.inkMuted, lineHeight: 18, marginTop: 4 },
+  aiDraftCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    padding: 14,
+    borderRadius: 18,
+    backgroundColor: "#FFF6E4",
+  },
   section: {
     padding: 18,
     gap: 18,
