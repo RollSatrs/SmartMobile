@@ -22,6 +22,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { IdeaMap } from "../components/IdeaMap"
+import { AddressSearch } from "../components/AddressSearch"
 import { ideaService } from "../ideas/ideaService"
 import type { Coordinates } from "../ideas/types"
 import type { RootStackParamList } from "../navigation/types"
@@ -259,6 +260,9 @@ export function CreateIdeaScreen({ navigation, route }: Props) {
           </Section>
 
           <Section number="3" title="Укажите место" subtitle="Нажмите на карту или перетащите метку">
+            <AddressSearch
+              onSelect={(result) => void handleCoordinatesChange({ latitude: result.lat, longitude: result.lng })}
+            />
             <IdeaMap
               value={coordinates}
               onChange={handleCoordinatesChange}
