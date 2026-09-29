@@ -5,4 +5,5 @@ export type RootStackParamList = {
   GovHome: undefined
   CreateIdea: undefined
   IdeaSubmitted: { ideaId: string }
+  IdeaDetail: { ideaId: string }
 }

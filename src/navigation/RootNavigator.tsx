@@ -5,6 +5,7 @@ import { useAuth } from "../auth/AuthContext"
 import { GovHomeScreen } from "../screens/GovHomeScreen"
 import { CreateIdeaScreen } from "../screens/CreateIdeaScreen"
 import { IdeaSubmittedScreen } from "../screens/IdeaSubmittedScreen"
+import { IdeaDetailScreen } from "../screens/IdeaDetailScreen"
 import { LoadingScreen } from "../screens/LoadingScreen"
 import { LoginScreen } from "../screens/LoginScreen"
 import { RegisterScreen } from "../screens/RegisterScreen"
@@ -59,6 +60,11 @@ export function RootNavigator() {
               name="IdeaSubmitted"
               component={IdeaSubmittedScreen}
               options={{ gestureEnabled: false }}
+            />
+            <Stack.Screen
+              name="IdeaDetail"
+              component={IdeaDetailScreen}
+              options={{ animation: "slide_from_right" }}
             />
           </>
         ) : (
