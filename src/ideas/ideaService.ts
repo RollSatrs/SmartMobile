@@ -480,8 +480,8 @@ export const ideaService = {
     return withoutMockMetadata(idea)
   },
 
-  /** Назначение идеи текущему сотруднику госоргана («взять в работу», см. SmartBackend#4). */
-  async assignToMe(id: string, assignee: { id: string; name: string }): Promise<IdeaRecord> {
+  /** Назначение идеи выбранному сотруднику госоргана (см. SmartBackend#4 и #14). */
+  async assignTo(id: string, assignee: { id: string; name: string }): Promise<IdeaRecord> {
     if (!isMockAuthEnabled) {
       const numericId = Number(assignee.id)
       const response = await fetch(`${requireApiUrl()}/ideas/${id}/assignee`, {

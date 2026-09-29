@@ -7,6 +7,7 @@ import { ActivityIndicator, Button, IconButton, Snackbar, Text } from "react-nat
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { useAuth } from "../auth/AuthContext"
+import { AssigneePickerSheet } from "../components/AssigneePickerSheet"
 import { IdeaLocationMap } from "../components/IdeaLocationMap"
 import { StatusUpdateSheet } from "../components/StatusUpdateSheet"
 import { ideaService } from "../ideas/ideaService"
@@ -14,6 +15,8 @@ import { ideaStatusConfig } from "../ideas/status"
 import type { IdeaRecord, IdeaStatus, IdeaStatusHistoryItem } from "../ideas/types"
 import type { RootStackParamList } from "../navigation/types"
 import { colors } from "../theme"
+import type { GovOfficial } from "../users/types"
+import { userService } from "../users/userService"
 
 type Props = NativeStackScreenProps<RootStackParamList, "GovIdeaDetail">
 
@@ -32,15 +35,34 @@ export function GovIdeaDetailScreen({ route, navigation }: Props) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
   const [isStatusSheetVisible, setIsStatusSheetVisible] = useState(false)
+  const [isAssigneeSheetVisible, setIsAssigneeSheetVisible] = useState(false)
   const [isSubmittingStatus, setIsSubmittingStatus] = useState(false)
   const [isAssigning, setIsAssigning] = useState(false)
+  const [assigningOfficialId, setAssigningOfficialId] = useState<string | null>(null)
+  const [officials, setOfficials] = useState<GovOfficial[]>([])
+  const [isLoadingOfficials, setIsLoadingOfficials] = useState(false)
+  const [officialsError, setOfficialsError] = useState("")
+  const [assignmentError, setAssignmentError] = useState("")
   const [snackbar, setSnackbar] = useState("")
 
   const loadIdea = useCallback(async () => {
     setIsLoading(true)
     try {
       const result = await ideaService.getById(route.params.ideaId)
-      setIdea(result)
+      if (result.assigneeId && !result.assigneeName) {
+        try {
+          const loadedOfficials = await userService.listGovOfficials()
+          const assignee = loadedOfficials.find(
+            (official) => String(official.id) === String(result.assigneeId),
+          )
+          setOfficials(loadedOfficials)
+          setIdea({ ...result, assigneeName: assignee?.name })
+        } catch {
+          setIdea(result)
+        }
+      } else {
+        setIdea(result)
+      }
       setError("")
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : "Не удалось загрузить идею")
@@ -70,18 +92,48 @@ export function GovIdeaDetailScreen({ route, navigation }: Props) {
     }
   }
 
-  const handleTakeInWork = async () => {
-    if (!idea || !user) return
-    setIsAssigning(true)
+  const loadOfficials = async () => {
+    setIsLoadingOfficials(true)
+    setOfficialsError("")
     try {
-      const updated = await ideaService.assignToMe(idea.id, { id: user.id, name: user.name })
-      setIdea(updated)
-      setSnackbar("Вы назначены ответственным")
+      setOfficials(await userService.listGovOfficials())
     } catch (caughtError) {
-      setSnackbar(caughtError instanceof Error ? caughtError.message : "Не удалось назначить исполнителя")
+      setOfficialsError(caughtError instanceof Error ? caughtError.message : "Не удалось загрузить сотрудников")
+    } finally {
+      setIsLoadingOfficials(false)
+    }
+  }
+
+  const handleOpenAssigneePicker = () => {
+    setAssignmentError("")
+    setIsAssigneeSheetVisible(true)
+    void loadOfficials()
+  }
+
+  const handleAssign = async (assignee: { id: string; name: string }, fromPicker = false) => {
+    if (!idea) return
+    setIsAssigning(true)
+    setAssigningOfficialId(assignee.id)
+    setAssignmentError("")
+    try {
+      const updated = await ideaService.assignTo(idea.id, assignee)
+      setIdea({ ...updated, assigneeName: assignee.name })
+      setIsAssigneeSheetVisible(false)
+      setSnackbar(user && String(assignee.id) === String(user.id)
+        ? "Вы назначены ответственным"
+        : `Ответственный: ${assignee.name}`)
+    } catch (caughtError) {
+      const message = caughtError instanceof Error ? caughtError.message : "Не удалось назначить исполнителя"
+      if (fromPicker) setAssignmentError(message)
+      else setSnackbar(message)
     } finally {
       setIsAssigning(false)
+      setAssigningOfficialId(null)
     }
+  }
+
+  const handleTakeInWork = () => {
+    if (user) void handleAssign({ id: user.id, name: user.name })
   }
 
   if (isLoading) {
@@ -188,11 +240,16 @@ export function GovIdeaDetailScreen({ route, navigation }: Props) {
                 : idea.assigneeName ?? (idea.assigneeId ? `Сотрудник #${idea.assigneeId}` : "Пока не назначен")}
             </Text>
           </View>
-          {!isAssignedToMe ? (
-            <Button mode="text" onPress={handleTakeInWork} loading={isAssigning} disabled={isAssigning} compact>
-              Взять в работу
+          <View style={styles.assigneeActions}>
+            {!isAssignedToMe ? (
+              <Button mode="text" onPress={handleTakeInWork} loading={isAssigning} disabled={isAssigning} compact>
+                Взять в работу
+              </Button>
+            ) : null}
+            <Button mode="text" onPress={handleOpenAssigneePicker} disabled={isAssigning} compact>
+              Назначить другого
             </Button>
-          ) : null}
+          </View>
         </View>
 
         <Button
@@ -232,6 +289,24 @@ export function GovIdeaDetailScreen({ route, navigation }: Props) {
         isSubmitting={isSubmittingStatus}
         onDismiss={() => setIsStatusSheetVisible(false)}
         onSubmit={handleStatusSubmit}
+      />
+
+      <AssigneePickerSheet
+        visible={isAssigneeSheetVisible}
+        officials={officials}
+        currentUserId={user?.id ?? ""}
+        selectedId={idea.assigneeId}
+        isLoading={isLoadingOfficials}
+        isSubmitting={isAssigning}
+        submittingId={assigningOfficialId}
+        error={officialsError}
+        submitError={assignmentError}
+        onDismiss={() => {
+          setIsAssigneeSheetVisible(false)
+          setAssignmentError("")
+        }}
+        onRetry={() => void loadOfficials()}
+        onSelect={(official) => void handleAssign(official, true)}
       />
 
       <Snackbar visible={Boolean(snackbar)} onDismiss={() => setSnackbar("")} duration={2400}>
@@ -410,6 +485,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceMuted,
   },
   assigneeCopy: { flex: 1 },
+  assigneeActions: { alignItems: "flex-end" },
   assigneeTitle: { color: colors.ink, fontWeight: "700" },
   assigneeValue: { color: colors.inkMuted, marginTop: 2 },
   statusButton: { marginTop: 20, borderRadius: 14 },
