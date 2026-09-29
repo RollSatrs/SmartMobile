@@ -24,7 +24,12 @@
         "googleMaps": {
           "apiKey": "AIzaSyCanYJ_-uNmIF9brihDRNJuOm9nRlMHINI"
         }
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -45,6 +50,11 @@
           "locationWhenInUsePermission": "Разрешите определить местоположение, чтобы поставить точку идеи на карте."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "46af7001-235c-433a-b97e-d7bc12e65891"
+      }
+    }
   }
 }
