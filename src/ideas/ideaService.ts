@@ -152,6 +152,28 @@ const seededIdeas: StoredMockIdea[] = [
     assigneeName: null,
     statusHistory: [historyItem("crosswalk-1", "received", 1, "Обращение зарегистрировано")],
   },
+  {
+    id: "demo-suspicious-photo",
+    title: "Разбитый асфальт на въезде во двор",
+    description:
+      "На въезде во двор образовалась яма, повредил подвеску. Просьба заасфальтировать участок.",
+    photoUrl: "mock://suspicious",
+    lat: 50.4189,
+    lng: 80.2298,
+    addressDistrict: "Центральный район, Семей",
+    status: "received",
+    category: "Дороги и транспорт",
+    classificationReason: "В описании упоминается яма на дороге во дворе.",
+    photoFlag: "inconsistent",
+    photoFlagReason: "На фото не видно повреждений дорожного покрытия — нужна проверка на месте.",
+    createdAt: daysAgo(2),
+    hasUnreadUpdate: false,
+    authorId: "demo-author-5",
+    authorName: "Тимур Байжанов",
+    assigneeId: null,
+    assigneeName: null,
+    statusHistory: [historyItem("suspicious-1", "received", 2, "Обращение зарегистрировано")],
+  },
 ]
 
 const readMockIdeas = async (): Promise<StoredMockIdea[]> => {
@@ -278,6 +300,8 @@ type BackendIdea = {
   rating: number | null
   ratingComment: string | null
   afterPhotoUrl: string | null
+  photoFlag: "consistent" | "inconsistent" | "uncertain" | null
+  photoFlagReason: string | null
   createdAt: string
   updatedAt: string
   statusHistory?: BackendStatusHistoryItem[]
@@ -301,6 +325,8 @@ const mapBackendIdea = (raw: BackendIdea): IdeaRecord => ({
   rating: raw.rating,
   ratingComment: raw.ratingComment,
   afterPhotoUrl: raw.afterPhotoUrl,
+  photoFlag: raw.photoFlag,
+  photoFlagReason: raw.photoFlagReason,
   statusHistory: (raw.statusHistory ?? []).map((item) => ({
     id: String(item.id),
     status: item.status,

@@ -50,6 +50,14 @@ export function IdeaCard({ idea, onPress }: Props) {
               {status.label}
             </Text>
           </View>
+          {idea.photoFlag === "inconsistent" ? (
+            <MaterialCommunityIcons
+              name="alert-circle"
+              size={18}
+              color={colors.danger}
+              accessibilityLabel="AI: фото может не соответствовать описанию"
+            />
+          ) : null}
           {idea.hasUnreadUpdate ? (
             <View style={styles.unreadWrap}>
               <View style={styles.unreadDot} />

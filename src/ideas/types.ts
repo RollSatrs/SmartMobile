@@ -40,6 +40,8 @@ export type IdeaRecord = {
   rating?: number | null
   ratingComment?: string | null
   afterPhotoUrl?: string | null
+  photoFlag?: "consistent" | "inconsistent" | "uncertain" | null
+  photoFlagReason?: string | null
 }
 
 export type IdeaFeedbackPayload = {
