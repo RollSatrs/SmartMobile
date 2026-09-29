@@ -33,6 +33,10 @@ export type IdeaRecord = {
   createdAt: string
   statusHistory: IdeaStatusHistoryItem[]
   hasUnreadUpdate: boolean
+  authorId?: string
+  authorName?: string
+  assigneeId?: string | null
+  assigneeName?: string | null
 }
 
 export type CreateIdeaPayload = {
@@ -47,3 +51,22 @@ export type IdeaListResponse = {
   items: IdeaRecord[]
   total: number
 }
+
+export type GovIdeaFilters = {
+  status?: IdeaStatus
+  category?: string
+  district?: string
+  search?: string
+}
+
+export const IDEA_CATEGORIES = [
+  "Дороги",
+  "ЖКХ",
+  "Транспорт",
+  "Безопасность",
+  "Экология",
+  "Благоустройство",
+  "Здравоохранение",
+  "Образование",
+  "Другое",
+] as const
