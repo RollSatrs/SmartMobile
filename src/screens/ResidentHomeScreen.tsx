@@ -99,6 +99,12 @@ export function ResidentHomeScreen({ navigation }: Props) {
                 </View>
               ) : null}
             </View>
+            <IconButton
+              icon="trophy-outline"
+              onPress={() => navigation.navigate("DistrictRanking")}
+              containerColor={colors.surface}
+              accessibilityLabel="Рейтинг районов"
+            />
             <IconButton icon="logout" onPress={signOut} containerColor={colors.surface} />
           </View>
         </View>
