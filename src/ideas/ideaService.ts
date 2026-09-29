@@ -271,12 +271,8 @@ const matchesGovFilters = (idea: IdeaRecord, filters: GovIdeaFilters) => {
 }
 
 // Реальный контракт backend (см. RollSatrs/SmartBackend#3, #4): id — number, category — объект
-// {id,name,slug} | null. Адаптеры ниже приводят его к тому же IdeaRecord (string id, category — имя),
-// который уже использует остальной мобильный код в мок-режиме. create/listMine/getById пока
-// кастуют ответ backend напрямую без адаптера (см. Asanali, SmartMobile#2/#3) — это разойдётся с
-// реальным контрактом при первом реальном подключении (EXPO_PUBLIC_USE_MOCK_AUTH=false), но так как
-// приложение сейчас всегда работает в мок-режиме, разногласие никак не проявляется. Полное включение
-// реального API — отдельная задача, здесь адаптер сделан только для новых методов кабинета госоргана.
+// {id,name,slug} | null. Единый адаптер приводит ответы всех методов, включая create/listMine/getById,
+// к IdeaRecord (string id, category — имя), который использует UI и мок-режим.
 type BackendCategory = { id: number; name: string; slug: string }
 type BackendStatusHistoryItem = {
   id: number
