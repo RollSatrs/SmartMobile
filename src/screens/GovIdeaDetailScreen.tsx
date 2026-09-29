@@ -222,6 +222,20 @@ export function GovIdeaDetailScreen({ route, navigation }: Props) {
           </View>
         ) : null}
 
+        {idea.photoFlag === "inconsistent" ? (
+          <View style={styles.warningCard}>
+            <MaterialCommunityIcons name="alert-outline" size={22} color={colors.danger} />
+            <View style={styles.warningCopy}>
+              <Text variant="labelLarge" style={styles.warningTitle}>
+                AI: фото может не соответствовать описанию
+              </Text>
+              <Text variant="bodySmall" style={styles.warningText}>
+                {idea.photoFlagReason ?? "Проверьте перед выездом на место."}
+              </Text>
+            </View>
+          </View>
+        ) : null}
+
         <View style={styles.assigneeCard}>
           <View style={styles.assigneeIcon}>
             <MaterialCommunityIcons
@@ -465,6 +479,19 @@ const styles = StyleSheet.create({
   aiCopy: { flex: 1 },
   aiTitle: { color: colors.ink, fontWeight: "800" },
   aiText: { color: colors.inkMuted, lineHeight: 18, marginTop: 3 },
+  warningCard: {
+    flexDirection: "row",
+    gap: 12,
+    padding: 16,
+    borderRadius: 19,
+    backgroundColor: "#FBE4E2",
+    borderWidth: 1,
+    borderColor: "#F2C4BE",
+    marginTop: 14,
+  },
+  warningCopy: { flex: 1 },
+  warningTitle: { color: colors.ink, fontWeight: "800" },
+  warningText: { color: colors.inkMuted, lineHeight: 18, marginTop: 3 },
   assigneeCard: {
     flexDirection: "row",
     alignItems: "center",
