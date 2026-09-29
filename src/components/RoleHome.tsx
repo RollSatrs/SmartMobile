@@ -8,9 +8,10 @@ import { colors } from "../theme"
 
 type Props = {
   kind: "resident" | "gov_official"
+  onPrimaryAction?: () => void
 }
 
-export function RoleHome({ kind }: Props) {
+export function RoleHome({ kind, onPrimaryAction }: Props) {
   const { user, signOut } = useAuth()
   const isResident = kind === "resident"
 
@@ -59,6 +60,17 @@ export function RoleHome({ kind }: Props) {
                 ? "Форма подачи идеи и история обращений появятся в следующих задачах."
                 : "Рабочая очередь госоргана будет подключена отдельным модулем команды."}
             </Text>
+            {isResident && onPrimaryAction ? (
+              <Button
+                mode="contained"
+                icon="plus"
+                onPress={onPrimaryAction}
+                style={styles.primaryButton}
+                contentStyle={styles.primaryButtonContent}
+              >
+                Подать идею
+              </Button>
+            ) : null}
           </Card.Content>
         </Card>
 
@@ -109,6 +121,8 @@ const styles = StyleSheet.create({
   },
   cardTitle: { color: colors.ink, fontWeight: "800" },
   cardCopy: { color: colors.inkMuted, lineHeight: 22 },
+  primaryButton: { alignSelf: "flex-start", marginTop: 4 },
+  primaryButtonContent: { minHeight: 48 },
   sessionCard: {
     padding: 18,
     borderRadius: 20,

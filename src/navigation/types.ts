@@ -3,4 +3,6 @@ export type RootStackParamList = {
   SignUp: undefined
   ResidentHome: undefined
   GovHome: undefined
+  CreateIdea: undefined
+  IdeaSubmitted: { ideaId: string }
 }
