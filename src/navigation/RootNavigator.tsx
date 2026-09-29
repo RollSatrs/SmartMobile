@@ -12,6 +12,7 @@ import { LoadingScreen } from "../screens/LoadingScreen"
 import { LoginScreen } from "../screens/LoginScreen"
 import { RegisterScreen } from "../screens/RegisterScreen"
 import { ResidentHomeScreen } from "../screens/ResidentHomeScreen"
+import { AiIdeaChatScreen } from "../screens/AiIdeaChatScreen"
 import { TrendDigestScreen } from "../screens/TrendDigestScreen"
 import { colors } from "../theme"
 import type { RootStackParamList } from "./types"
@@ -54,6 +55,11 @@ export function RootNavigator() {
         ) : user.role === "resident" ? (
           <>
             <Stack.Screen name="ResidentHome" component={ResidentHomeScreen} />
+            <Stack.Screen
+              name="AiIdeaChat"
+              component={AiIdeaChatScreen}
+              options={{ animation: "slide_from_right" }}
+            />
             <Stack.Screen
               name="CreateIdea"
               component={CreateIdeaScreen}

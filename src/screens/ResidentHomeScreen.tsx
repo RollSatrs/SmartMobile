@@ -133,6 +133,15 @@ export function ResidentHomeScreen({ navigation }: Props) {
           >
             Подать новую идею
           </Button>
+          <Button
+            mode="outlined"
+            icon="creation"
+            onPress={() => navigation.navigate("AiIdeaChat")}
+            style={styles.aiCreateButton}
+            contentStyle={styles.createButtonContent}
+          >
+            Описать идею с AI
+          </Button>
         </View>
 
         <View style={styles.statsRow}>
@@ -271,6 +280,7 @@ const styles = StyleSheet.create({
   heroTitle: { color: colors.ink, fontWeight: "900", marginTop: 16 },
   heroText: { color: colors.inkMuted, lineHeight: 22, marginTop: 7, maxWidth: 520 },
   createButton: { alignSelf: "flex-start", marginTop: 18 },
+  aiCreateButton: { alignSelf: "flex-start", marginTop: 10 },
   createButtonContent: { minHeight: 50 },
   statsRow: { flexDirection: "row", gap: 10, marginTop: 14 },
   statCard: {
