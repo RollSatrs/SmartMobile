@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
 import { useAuth } from "../auth/AuthContext"
 import { GovHomeScreen } from "../screens/GovHomeScreen"
+import { CreateIdeaScreen } from "../screens/CreateIdeaScreen"
+import { IdeaSubmittedScreen } from "../screens/IdeaSubmittedScreen"
 import { LoadingScreen } from "../screens/LoadingScreen"
 import { LoginScreen } from "../screens/LoginScreen"
 import { RegisterScreen } from "../screens/RegisterScreen"
@@ -46,7 +48,19 @@ export function RootNavigator() {
             <Stack.Screen name="SignUp" component={RegisterScreen} />
           </>
         ) : user.role === "resident" ? (
-          <Stack.Screen name="ResidentHome" component={ResidentHomeScreen} />
+          <>
+            <Stack.Screen name="ResidentHome" component={ResidentHomeScreen} />
+            <Stack.Screen
+              name="CreateIdea"
+              component={CreateIdeaScreen}
+              options={{ animation: "slide_from_right" }}
+            />
+            <Stack.Screen
+              name="IdeaSubmitted"
+              component={IdeaSubmittedScreen}
+              options={{ gestureEnabled: false }}
+            />
+          </>
         ) : (
           <Stack.Screen name="GovHome" component={GovHomeScreen} />
         )}
