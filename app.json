@@ -12,13 +12,19 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "kz.smartcity.abai",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCanYJ_-uNmIF9brihDRNJuOm9nRlMHINI"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
