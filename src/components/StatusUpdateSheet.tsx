@@ -17,6 +17,7 @@ const STATUS_ORDER: IdeaStatus[] = [
 ]
 
 const COMMENT_REQUIRED_FOR: IdeaStatus[] = ["rejected", "needs_clarification"]
+const LOCKED_FROM_DONE: IdeaStatus[] = ["in_progress", "in_review"]
 
 type Props = {
   visible: boolean
@@ -58,21 +59,25 @@ export function StatusUpdateSheet({ visible, currentStatus, isSubmitting, onDism
             {STATUS_ORDER.map((status) => {
               const config = ideaStatusConfig[status]
               const isSelected = status === selected
+              const isLocked = currentStatus === "done" && LOCKED_FROM_DONE.includes(status)
               return (
                 <Pressable
                   key={status}
                   accessibilityRole="radio"
-                  accessibilityState={{ checked: isSelected }}
+                  accessibilityState={{ checked: isSelected, disabled: isLocked }}
+                  disabled={isLocked}
                   onPress={() => setSelected(status)}
-                  style={[styles.option, isSelected && styles.optionSelected]}
+                  style={[styles.option, isSelected && styles.optionSelected, isLocked && styles.optionLocked]}
                 >
                   <View style={[styles.optionIcon, { backgroundColor: config.background }]}>
                     <MaterialCommunityIcons name={config.icon} size={18} color={config.color} />
                   </View>
-                  <Text variant="bodyMedium" style={styles.optionLabel}>
+                  <Text variant="bodyMedium" style={[styles.optionLabel, isLocked && styles.optionLabelLocked]}>
                     {config.label}
                   </Text>
-                  {isSelected ? (
+                  {isLocked ? (
+                    <MaterialCommunityIcons name="lock-outline" size={18} color={colors.inkMuted} />
+                  ) : isSelected ? (
                     <MaterialCommunityIcons name="check-circle" size={20} color={colors.primary} />
                   ) : null}
                 </Pressable>
@@ -148,6 +153,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   optionSelected: { backgroundColor: colors.surfaceMuted },
+  optionLocked: { opacity: 0.45 },
   optionIcon: {
     width: 32,
     height: 32,
@@ -156,6 +162,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   optionLabel: { flex: 1, color: colors.ink, fontWeight: "600" },
+  optionLabelLocked: { color: colors.inkMuted },
   input: { backgroundColor: colors.surface },
   actions: { flexDirection: "row", gap: 10, marginTop: 14 },
   actionButton: { flex: 1 },
