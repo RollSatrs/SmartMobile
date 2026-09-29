@@ -3,7 +3,21 @@ export type Coordinates = {
   longitude: number
 }
 
-export type IdeaStatus = "received"
+export type IdeaStatus =
+  | "received"
+  | "in_review"
+  | "in_progress"
+  | "done"
+  | "rejected"
+  | "needs_clarification"
+
+export type IdeaStatusHistoryItem = {
+  id: string
+  status: IdeaStatus
+  comment?: string
+  createdAt: string
+  actorName?: string
+}
 
 export type IdeaRecord = {
   id: string
@@ -17,6 +31,8 @@ export type IdeaRecord = {
   category: string | null
   classificationReason?: string
   createdAt: string
+  statusHistory: IdeaStatusHistoryItem[]
+  hasUnreadUpdate: boolean
 }
 
 export type CreateIdeaPayload = {
@@ -25,4 +41,9 @@ export type CreateIdeaPayload = {
   photoUrl: string
   lat: number
   lng: number
+}
+
+export type IdeaListResponse = {
+  items: IdeaRecord[]
+  total: number
 }
