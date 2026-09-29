@@ -11,6 +11,7 @@ import { ideaStatusConfig } from "../ideas/status"
 import type { IdeaRecord, IdeaStatusHistoryItem } from "../ideas/types"
 import type { RootStackParamList } from "../navigation/types"
 import { colors } from "../theme"
+import { RatingStars } from "../components/RatingStars"
 
 type Props = NativeStackScreenProps<RootStackParamList, "IdeaDetail">
 
@@ -129,6 +130,48 @@ export function IdeaDetailScreen({ route, navigation }: Props) {
               </Text>
             </View>
           </View>
+        ) : null}
+
+        {idea.status === "done" ? (
+          idea.rating ? (
+            <View style={styles.feedbackCard}>
+              <View style={styles.feedbackHeading}>
+                <View>
+                  <Text variant="labelLarge" style={styles.feedbackTitle}>Ваша оценка результата</Text>
+                  <RatingStars value={idea.rating} size={25} />
+                </View>
+                <Button
+                  mode="text"
+                  compact
+                  onPress={() => navigation.navigate("ImpactFeedback", { ideaId: idea.id })}
+                >
+                  Изменить
+                </Button>
+              </View>
+              {idea.ratingComment ? (
+                <Text variant="bodyMedium" style={styles.feedbackComment}>{idea.ratingComment}</Text>
+              ) : null}
+              {idea.afterPhotoUrl ? (
+                <View style={styles.afterPhotoWrap}>
+                  <Image source={{ uri: idea.afterPhotoUrl }} style={styles.afterPhoto} />
+                  <View style={styles.afterPhotoLabel}>
+                    <Text variant="labelSmall" style={styles.afterPhotoLabelText}>ФОТО ПОСЛЕ</Text>
+                  </View>
+                </View>
+              ) : null}
+            </View>
+          ) : (
+            <View style={styles.feedbackPrompt}>
+              <MaterialCommunityIcons name="star-outline" size={27} color={colors.secondary} />
+              <View style={styles.feedbackPromptCopy}>
+                <Text variant="titleSmall" style={styles.feedbackTitle}>Как вам результат?</Text>
+                <Text variant="bodySmall" style={styles.feedbackPromptText}>Оцените выполненную работу и оставьте комментарий.</Text>
+              </View>
+              <Button mode="contained-tonal" compact onPress={() => navigation.navigate("ImpactFeedback", { ideaId: idea.id })}>
+                Оценить
+              </Button>
+            </View>
+          )
         ) : null}
 
         <View style={styles.timelineHeading}>
@@ -303,6 +346,17 @@ const styles = StyleSheet.create({
   aiCopy: { flex: 1 },
   aiTitle: { color: colors.ink, fontWeight: "800" },
   aiText: { color: colors.inkMuted, lineHeight: 18, marginTop: 3 },
+  feedbackCard: { marginTop: 14, padding: 16, borderRadius: 20, backgroundColor: "#FFF6E4", gap: 12 },
+  feedbackHeading: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", gap: 10 },
+  feedbackTitle: { color: colors.ink, fontWeight: "800" },
+  feedbackComment: { color: colors.ink, lineHeight: 21 },
+  afterPhotoWrap: { height: 190, borderRadius: 16, overflow: "hidden" },
+  afterPhoto: { width: "100%", height: "100%" },
+  afterPhotoLabel: { position: "absolute", left: 9, bottom: 9, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8, backgroundColor: "rgba(23,51,46,0.82)" },
+  afterPhotoLabelText: { color: "#FFFFFF", fontWeight: "900" },
+  feedbackPrompt: { flexDirection: "row", alignItems: "center", gap: 11, marginTop: 14, padding: 15, borderRadius: 19, backgroundColor: "#FFF6E4" },
+  feedbackPromptCopy: { flex: 1 },
+  feedbackPromptText: { color: colors.inkMuted, lineHeight: 18, marginTop: 2 },
   timelineHeading: {
     flexDirection: "row",
     justifyContent: "space-between",

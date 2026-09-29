@@ -8,6 +8,7 @@ import { CreateIdeaScreen } from "../screens/CreateIdeaScreen"
 import { DistrictRankingScreen } from "../screens/DistrictRankingScreen"
 import { IdeaSubmittedScreen } from "../screens/IdeaSubmittedScreen"
 import { IdeaDetailScreen } from "../screens/IdeaDetailScreen"
+import { ImpactFeedbackScreen } from "../screens/ImpactFeedbackScreen"
 import { LoadingScreen } from "../screens/LoadingScreen"
 import { LoginScreen } from "../screens/LoginScreen"
 import { RegisterScreen } from "../screens/RegisterScreen"
@@ -67,6 +68,11 @@ export function RootNavigator() {
             <Stack.Screen
               name="IdeaDetail"
               component={IdeaDetailScreen}
+              options={{ animation: "slide_from_right" }}
+            />
+            <Stack.Screen
+              name="ImpactFeedback"
+              component={ImpactFeedbackScreen}
               options={{ animation: "slide_from_right" }}
             />
             <Stack.Screen

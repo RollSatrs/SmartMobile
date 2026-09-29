@@ -7,6 +7,7 @@ import type {
   CreateIdeaPayload,
   GovIdeaFilters,
   IdeaListResponse,
+  IdeaFeedbackPayload,
   IdeaRecord,
   IdeaStatus,
   IdeaStatusHistoryItem,
@@ -274,6 +275,9 @@ type BackendIdea = {
   addressDistrict: string
   photoUrl: string
   assigneeId: number | null
+  rating: number | null
+  ratingComment: string | null
+  afterPhotoUrl: string | null
   createdAt: string
   updatedAt: string
   statusHistory?: BackendStatusHistoryItem[]
@@ -294,6 +298,9 @@ const mapBackendIdea = (raw: BackendIdea): IdeaRecord => ({
   hasUnreadUpdate: false,
   authorId: String(raw.authorId),
   assigneeId: raw.assigneeId != null ? String(raw.assigneeId) : null,
+  rating: raw.rating,
+  ratingComment: raw.ratingComment,
+  afterPhotoUrl: raw.afterPhotoUrl,
   statusHistory: (raw.statusHistory ?? []).map((item) => ({
     id: String(item.id),
     status: item.status,
@@ -323,7 +330,7 @@ export const ideaService = {
         body: JSON.stringify(payload),
       })
       if (!response.ok) throw new Error(await readErrorMessage(response))
-      return (await response.json()) as IdeaRecord
+      return mapBackendIdea((await response.json()) as BackendIdea)
     }
 
     await wait(850)
@@ -367,7 +374,8 @@ export const ideaService = {
         credentials: "include",
       })
       if (!response.ok) throw new Error(await readErrorMessage(response))
-      return (await response.json()) as IdeaListResponse
+      const data = (await response.json()) as BackendIdeasPage
+      return { items: data.items.map(mapBackendIdea), total: data.total }
     }
 
     await wait(450)
@@ -386,7 +394,7 @@ export const ideaService = {
         credentials: "include",
       })
       if (!response.ok) throw new Error(await readErrorMessage(response))
-      return (await response.json()) as IdeaRecord
+      return mapBackendIdea((await response.json()) as BackendIdea)
     }
 
     await wait(300)
@@ -505,5 +513,36 @@ export const ideaService = {
     ideas[index] = idea
     await saveMockIdeas(ideas)
     return withoutMockMetadata(idea)
+  },
+
+  async submitFeedback(id: string, payload: IdeaFeedbackPayload): Promise<IdeaRecord> {
+    if (!isMockAuthEnabled) {
+      const response = await fetch(`${requireApiUrl()}/ideas/${id}/feedback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      })
+      if (!response.ok) throw new Error(await readErrorMessage(response))
+      return mapBackendIdea((await response.json()) as BackendIdea)
+    }
+
+    await wait(450)
+    const ideas = await readMockIdeas()
+    const index = ideas.findIndex((item) => item.id === id)
+    if (index < 0) throw new Error("Идея не найдена")
+    const session = await sessionStorage.read()
+    const isDemoIdea = ideas[index].id.startsWith("demo-")
+    if (!isDemoIdea && ideas[index].authorId && ideas[index].authorId !== session?.user.id) {
+      throw new Error("Оценить идею может только её автор")
+    }
+    if (ideas[index].status !== "done") throw new Error("Оценить можно только завершённую идею")
+
+    ideas[index].rating = payload.rating
+    ideas[index].ratingComment = payload.comment ?? null
+    ideas[index].afterPhotoUrl = payload.afterPhotoUrl ?? null
+    ideas[index].hasUnreadUpdate = false
+    await saveMockIdeas(ideas)
+    return withoutMockMetadata(ideas[index])
   },
 }
