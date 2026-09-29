@@ -5,12 +5,14 @@ import { useAuth } from "../auth/AuthContext"
 import { GovHomeScreen } from "../screens/GovHomeScreen"
 import { GovIdeaDetailScreen } from "../screens/GovIdeaDetailScreen"
 import { CreateIdeaScreen } from "../screens/CreateIdeaScreen"
+import { DistrictRankingScreen } from "../screens/DistrictRankingScreen"
 import { IdeaSubmittedScreen } from "../screens/IdeaSubmittedScreen"
 import { IdeaDetailScreen } from "../screens/IdeaDetailScreen"
 import { LoadingScreen } from "../screens/LoadingScreen"
 import { LoginScreen } from "../screens/LoginScreen"
 import { RegisterScreen } from "../screens/RegisterScreen"
 import { ResidentHomeScreen } from "../screens/ResidentHomeScreen"
+import { TrendDigestScreen } from "../screens/TrendDigestScreen"
 import { colors } from "../theme"
 import type { RootStackParamList } from "./types"
 
@@ -67,6 +69,11 @@ export function RootNavigator() {
               component={IdeaDetailScreen}
               options={{ animation: "slide_from_right" }}
             />
+            <Stack.Screen
+              name="DistrictRanking"
+              component={DistrictRankingScreen}
+              options={{ animation: "slide_from_right" }}
+            />
           </>
         ) : (
           <>
@@ -74,6 +81,16 @@ export function RootNavigator() {
             <Stack.Screen
               name="GovIdeaDetail"
               component={GovIdeaDetailScreen}
+              options={{ animation: "slide_from_right" }}
+            />
+            <Stack.Screen
+              name="TrendDigest"
+              component={TrendDigestScreen}
+              options={{ animation: "slide_from_right" }}
+            />
+            <Stack.Screen
+              name="DistrictRanking"
+              component={DistrictRankingScreen}
               options={{ animation: "slide_from_right" }}
             />
           </>

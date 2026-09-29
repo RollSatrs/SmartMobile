@@ -130,6 +130,16 @@ export function GovHomeScreen({ navigation }: Props) {
             Кабинет госоргана
           </Text>
         </View>
+        <IconButton
+          icon="chart-line"
+          onPress={() => navigation.navigate("TrendDigest")}
+          accessibilityLabel="Еженедельный дайджест"
+        />
+        <IconButton
+          icon="trophy-outline"
+          onPress={() => navigation.navigate("DistrictRanking")}
+          accessibilityLabel="Рейтинг районов"
+        />
         <IconButton icon="logout" onPress={signOut} accessibilityLabel="Выйти" />
       </View>
 
