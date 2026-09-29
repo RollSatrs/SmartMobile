@@ -1,7 +1,28 @@
+import AsyncStorage from "@react-native-async-storage/async-storage"
+
 import type { AuthResponse, LoginPayload, RegisterPayload, UserRole } from "./types"
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL?.replace(/\/$/, "")
 const USE_MOCK_AUTH = process.env.EXPO_PUBLIC_USE_MOCK_AUTH !== "false"
+const MOCK_USERS_KEY = "smart-city-mock-users"
+
+type MockUserRecord = { name: string; role: UserRole }
+
+const readMockUsers = async (): Promise<Record<string, MockUserRecord>> => {
+  const stored = await AsyncStorage.getItem(MOCK_USERS_KEY)
+  if (!stored) return {}
+  try {
+    return JSON.parse(stored) as Record<string, MockUserRecord>
+  } catch {
+    return {}
+  }
+}
+
+const saveMockUser = async (email: string, record: MockUserRecord) => {
+  const users = await readMockUsers()
+  users[email.toLowerCase()] = record
+  await AsyncStorage.setItem(MOCK_USERS_KEY, JSON.stringify(users))
+}
 
 const wait = (milliseconds: number) =>
   new Promise((resolve) => setTimeout(resolve, milliseconds))
@@ -57,10 +78,11 @@ export const authService = {
     }
 
     await wait(650)
-    const role: UserRole = payload.email.toLowerCase().startsWith("gov")
-      ? "gov_official"
-      : "resident"
-    const name = role === "gov_official" ? "Представитель акимата" : "Житель области Абай"
+    const existing = (await readMockUsers())[payload.email.toLowerCase()]
+    // Если такого email ещё не регистрировали — определяем роль по префиксу "gov" (быстрый вход для теста без регистрации).
+    const role: UserRole =
+      existing?.role ?? (payload.email.toLowerCase().startsWith("gov") ? "gov_official" : "resident")
+    const name = existing?.name ?? (role === "gov_official" ? "Представитель акимата" : "Житель области Абай")
 
     return createMockResponse(payload.email, name, role)
   },
@@ -71,7 +93,9 @@ export const authService = {
     }
 
     await wait(750)
-    return createMockResponse(payload.email, payload.name.trim(), payload.role)
+    const name = payload.name.trim()
+    await saveMockUser(payload.email, { name, role: payload.role })
+    return createMockResponse(payload.email, name, payload.role)
   },
 }
 
