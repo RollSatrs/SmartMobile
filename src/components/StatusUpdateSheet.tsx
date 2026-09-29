@@ -94,6 +94,8 @@ export function StatusUpdateSheet({ visible, currentStatus, isSubmitting, onDism
             multiline
             numberOfLines={3}
             style={styles.input}
+            textContentType="none"
+            autoComplete="off"
           />
           {commentRequired && !commentValid ? (
             <HelperText type="error" visible>

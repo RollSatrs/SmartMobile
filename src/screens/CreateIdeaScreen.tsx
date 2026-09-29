@@ -189,6 +189,8 @@ export function CreateIdeaScreen({ navigation, route }: Props) {
               maxLength={120}
               error={showValidation && !titleValid}
               right={<TextInput.Affix text={`${title.length}/120`} />}
+              textContentType="none"
+              autoComplete="off"
             />
             {showValidation && !titleValid ? (
               <HelperText type="error" visible>
@@ -206,6 +208,8 @@ export function CreateIdeaScreen({ navigation, route }: Props) {
               error={showValidation && !descriptionValid}
               style={styles.descriptionInput}
               right={<TextInput.Affix text={`${description.length}/1500`} />}
+              textContentType="none"
+              autoComplete="off"
             />
             {showValidation && !descriptionValid ? (
               <HelperText type="error" visible>

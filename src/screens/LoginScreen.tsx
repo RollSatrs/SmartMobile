@@ -57,6 +57,7 @@ export function LoginScreen({ navigation }: Props) {
         onChangeText={setEmail}
         autoCapitalize="none"
         autoComplete="email"
+        textContentType="emailAddress"
         keyboardType="email-address"
         error={emailIsInvalid}
         left={<TextInput.Icon icon="email-outline" />}
@@ -74,6 +75,7 @@ export function LoginScreen({ navigation }: Props) {
         onChangeText={setPassword}
         secureTextEntry={!showPassword}
         autoComplete="current-password"
+        textContentType="password"
         left={<TextInput.Icon icon="lock-outline" />}
         right={
           <TextInput.Icon

@@ -177,6 +177,8 @@ export function ImpactFeedbackScreen({ route, navigation }: Props) {
             maxLength={1000}
             style={styles.commentInput}
             right={<TextInput.Affix text={`${comment.length}/1000`} />}
+            textContentType="none"
+            autoComplete="off"
           />
         </View>
 
