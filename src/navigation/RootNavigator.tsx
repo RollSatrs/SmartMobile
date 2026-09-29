@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
 import { useAuth } from "../auth/AuthContext"
 import { GovHomeScreen } from "../screens/GovHomeScreen"
+import { GovIdeaDetailScreen } from "../screens/GovIdeaDetailScreen"
 import { CreateIdeaScreen } from "../screens/CreateIdeaScreen"
 import { IdeaSubmittedScreen } from "../screens/IdeaSubmittedScreen"
 import { IdeaDetailScreen } from "../screens/IdeaDetailScreen"
@@ -68,7 +69,14 @@ export function RootNavigator() {
             />
           </>
         ) : (
-          <Stack.Screen name="GovHome" component={GovHomeScreen} />
+          <>
+            <Stack.Screen name="GovHome" component={GovHomeScreen} />
+            <Stack.Screen
+              name="GovIdeaDetail"
+              component={GovIdeaDetailScreen}
+              options={{ animation: "slide_from_right" }}
+            />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
